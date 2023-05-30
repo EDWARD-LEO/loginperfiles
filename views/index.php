@@ -90,31 +90,7 @@ if (!isset($_SESSION['login']) || !$_SESSION['login']['status']){
             </div>
 
             <!-- OPCIONES QUE DEBEN SER FILTRADAS DE ACUERD AL PERFIL -->
-            <li class="nav-item">
-                <a class="nav-link" href="charts.html">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Clientes</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="charts.html">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Compras</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="charts.html">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Reportes</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="charts.html">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Usuarios</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="charts.html">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Ventas</span></a>
-            </li>
+            <?php require_once './sidebaroptions.php'; ?>
             <!-- FIN OPCIONES DEL SIDEBAR -->
 
             <!-- Divider -->
@@ -237,6 +213,40 @@ if (!isset($_SESSION['login']) || !$_SESSION['login']['status']){
 
     <!-- Custom scripts for all pages -->
     <script src="./js/sb-admin-2.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            //Crearemos una función que obtenga la URL(vista)
+            function getURL(){
+                //1. Obtener la URL
+                const url = new URL(window.location.href);
+                //2. Obtener el valor enviado por la URL
+                const vista = url.searchParams.get("view");
+                //3. Crear un objeto que referencia contenedor
+                const contenedor = document.querySelector("#content-dinamics");
+                
+                //Cuando el usuario elige una opción...
+                if (vista != null){
+                    fetch(vista)
+                        .then(respuesta => respuesta.text())
+                        .then(datos => {
+                            contenedor.innerHTML = datos;
+
+                            //Necesitamos recorrer todas las etiquetas <script> y "reactivarlas"
+                            const scriptsTag = contenedor.getElementsByTagName("script");
+                            for (i = 0; i < scriptsTag.length; i++){
+                                eval(scriptsTag[i].innerText);
+                            }
+                        });
+                }
+            }
+
+            getURL();
+
+        });
+    </script>
+
 
 </body>
 
